@@ -1,0 +1,55 @@
+藍圖:
+sortByNation->
+sortByCounty->
+Json格式 {"新北市":[{"鄉鎮市區":"三峽","所屬縣市":"新北市"}]}
+csv 鄉鎮市區	所屬縣市	外商個數	國家總數	各個國家統計
+    三峽	新北市
+
+參考資料:
+//import------
+org.json reference 	   https://stleary.github.io/JSON-java/
+json jar 		   http://mvnrepository.com/artifact/org.json/json/20160810
+import a jar file	   https://stackoverflow.com/questions/460364/how-to-use-classes-from-jar-files
+			   javac  -cp .;json-20160810.jar SortAndOutPut.java
+Including jars in a directory within the Java classpath	https://stackoverflow.com/questions/219585/including-all-the-jars-in-a-directory-within-the-java-classpath
+			   java -classpath json-20160810.jar;. SortAndOutPut
+FileUtils		   http://snkcxy.iteye.com/blog/1845862
+			   https://commons.apache.org/proper/commons-io/download_io.cgi
+compile 2 jar 		   http://www.codejava.net/java-core/tools/using-javac-command#CompileMultiple
+			   https://stackoverflow.com/questions/2096283/including-jars-in-classpath-on-commandline-javac-or-apt
+       (compile lib 資料夾)https://stackoverflow.com/questions/219585/including-all-the-jars-in-a-directory-within-the-java-classpath
+	(官方)		   http://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html
+//tools-------
+Mr.Data Converter 	   http://shancarter.github.io/mr-data-converter/
+
+//error----
+錯誤 unmappable character for encoding MS950 http://pcwiki.pixnet.net/blog/post/96370531-%5B%E8%BD%89%5D%E8%A7%A3%E6%B1%BAjavac%E7%B7%A8%E8%AD%AF%E6%99%82%E4%B8%AD%E6%96%87%E7%B7%A8%E7%A2%BC%E8%AD%A6%E5%91%8A%E7%9A%84%E5%95%8F%E9%A1%8C
+			 	javac -encoding utf-8 -cp .;json-20160810.jar SortAndOutPut.java
+
+//else----
+how to parse json 	    	https://stackoverflow.com/questions/2591098/how-to-parse-json-in-java
+java read string from file  	https://stackoverflow.com/questions/326390/how-do-i-create-a-java-string-from-the-contents-of-a-file
+sort JsonArray 	http://blog.csdn.net/androiddeveloper_lee/article/details/47337235
+Comparing Strings and Portions of Strings	https://docs.oracle.com/javase/tutorial/java/data/comparestrings.html
+Converting JSON to XLS/CSV in Java [closed] 	https://stackoverflow.com/questions/7172158/converting-json-to-xls-csv-in-java
+Map				https://stackoverflow.com/questions/6943588/can-java-use-string-as-an-index-array-key-ex-arraya-1
+				http://lolikitty.pixnet.net/blog/post/109319721-java-%E4%B8%AD-hashmap-%E5%88%97%E5%8D%B0%28%E5%8F%96%E5%BE%97%29%E5%85%A8%E9%83%A8-key-%E8%88%87-value-%E8%B3%87%E6%96%99
+
+//暫存cmd指令----
+ java -classpath json-20160810.jar;. SortAndOutPut
+javac -encoding utf-8 -cp .;json-20160810.jar SortAndOutPut.java
+javac -encoding utf-8 -cp json-20160810.jar; commons-io-2.5.jar; SortAndOutPut.java
+java -cp json-20160810.jar;commons-io-2.5.jar; SortAndOutPut
+
+javac  -encoding utf-8 -cp "json-20160810.jar;commons-io-2.5.jar;libs/*.jar" SortAndOutPut.java
+java -cp "/libs/*.jar" SortAndOutPut
+java  -cp "json-20160810.jar;commons-io-2.5.jar;libs/*.jar" SortAndOutPut.java
+
+javac -Xlint:deprecation -encoding utf-8 -cp json-20160810.jar;commons-io-2.5.jar; SortAndOutPut.java
+
+
+https://dotblogs.com.tw/michaelchen/2015/01/12/java_decode_json
+http://lolikitty.pixnet.net/blog/post/190518696-java-json-%E6%95%99%E5%AD%B8%EF%BC%9A%E4%BD%BF%E7%94%A8-org.json-%E7%B7%A8%E7%A2%BC%E8%A7%A3%E7%A2%BC
+
+網軟延伸
+JSON javascript http://expect7.pixnet.net/blog/post/37666521-%5B%E7%A8%8B%E5%BC%8F%5D%5Bjavascript%5D-%E4%BB%80%E9%BA%BC%E6%98%AFjson%EF%BC%9F%E5%9F%BA%E6%9C%AC%E6%95%99%E5%AD%B8%EF%BC%81

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+ <svg width="800px" height="600px" viewBox="0 0 800 700"></svg>
+    <script type="text/javascript"></script>
+    <script type="text/javascript" src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script>
+    d3.json("../topojson/counties.json", function(topodata) {
+        ArrayList = []
+        d3.csv("CompanyInfo-summary.csv", function(error, data) {
+            // console.log(data)
+            // console.log(data.length)
+            for (var i = 0; i < data.length; i++) {
+                var county = data[i]["county"];
+                var count = data[i]["count()"]
+                ArrayList[county] = count
+            }
+            if (error) throw error;
+            features = topojson.feature(topodata, topodata.objects.map).features;
+            //console.log(features)
+            // 這裡要注意的是 topodata.objects["county"] 中的 "county" 為原本 shp 的檔名
+            path = d3.geo.path().projection( // 路徑產生器
+                d3.geo.mercator().center([121, 24]).scale(10000) // 座標變換函式
+            );
+            d3.select("svg").selectAll("path").data(features)
+                .enter().append("path").attr("d", path);
+           
+            for (i = features.length - 1; i >= 0; i--) {
+                features[i].properties.count = ArrayList[features[i].properties.name];
+
+            }
+            var color = d3.scale.linear().domain([0, 200]).range(["#090", "#f00"]);
+            //console.log(color)
+            
+            d3.select("svg").selectAll("path").data(features).attr({
+                d: path,
+
+                fill: function(d) {
+                    return color(ArrayList[d.properties.name]);
+                }
+            });
+        })
+
+    });
+    </script>
+</body>
+
+</html>

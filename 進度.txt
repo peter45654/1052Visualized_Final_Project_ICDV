@@ -1,0 +1,8 @@
+ICdv prototype
+1. 建立google map  v
+2. 讀取台灣的topojson到一個obj還是甚麼的裡面 v
+3. 在google map上建立地圖  v
+--------4. 讀取公司資料的csv檔 ---------
+5. 讀取各縣市的統計資料 v
+6. 在地圖上標記各公司 
+7. 畫出分布

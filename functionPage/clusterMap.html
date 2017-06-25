@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>ICDV</title>
+    <style type="text/css">
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<div id="map"></div>
+<script>
+    function initMap() {
+
+        var datas;
+
+        var gm = {}; //儲存google map的所有物品
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 8,
+            center: {
+                lat: 23.58,
+                lng: 120.58
+            }
+        }); //新增一個google map
+        gm.map = map;
+        ArrayList = [];
+        CompanyList = [];
+
+
+        d3.csv("Address_Finish.csv",function (data) {
+            for(var i=0;i<data.length;i++){
+                if(data[i]["Response_Address"]!=="找不到指定的門牌地址。"){
+                    CompanyList.push({
+                        lng: parseFloat(data[i]["Response_X"]),
+                        lat:parseFloat(data[i]["Response_Y"])
+                    })
+                }
+            }
+            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+            var markers = CompanyList.map(function(location, i) {
+                return new google.maps.Marker({
+                    position: location,
+                    label: labels[i % labels.length]
+                });
+            });
+
+            console.log(markers)
+            var markerCluster = new MarkerClusterer(map, markers,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+        });
+        console.log(CompanyList)
+        var color = d3.scale.linear().domain([0, 200]).range(["#ffffff", "#FE0000"]);
+        //console.log(color)
+
+        $.getJSON("topojson/counties.json", function(data) {
+            //console.log(data);
+            geoJsonObject = topojson.feature(data, data.objects.map)
+            map.data.addGeoJson(geoJsonObject);
+            map.data.setStyle({
+                fillColor: '#ff202d'
+            });
+            map.data.setStyle(function(feature) {
+                var ascii = feature["f"]["name"];
+
+                var colors="#ff2b47";
+                if (typeof color(ArrayList[ascii]) != 'undefined') {
+                    //console.log(typeof ArrayList[ascii])
+                    colors = color(ArrayList[ascii]);
+                }
+                return {
+                    fillColor: colors,
+                    strokeWeight: 1,
+                    visible: true
+                };
+            });
+
+        });
+        //var i = 0;
+        var flag = true;
+
+
+    }
+</script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ1uQe2aMilKakSvizaGAj5NHG-U4qz4U&callback=initMap">
+
+</script>
+</body>
+
+</html>

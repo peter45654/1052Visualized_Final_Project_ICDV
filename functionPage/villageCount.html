@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>ICDV</title>
+    <style type="text/css">
+        #map {
+            height: 100%;
+            width: 80%;
+        }
+
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<div id="map"></div>
+<script>
+    function clear(features){
+        for (var i = 0; i < features.length; i++){
+            map.data.remove(features[i]);
+        }
+
+    }
+    function initMap() {
+
+        var datas;
+
+        var gm = {}; //儲存google map的所有物品
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 8,
+            center: {
+                lat: 23.58,
+                lng: 120.58
+            }
+        }); //新增一個google map
+        gm.map = map;
+        var ArrayList = [];
+        var CompanyList = [];
+        var CountryCount = {};
+        var VillageCount = [];
+        d3.csv("villageCount.csv",function (data) {
+            for(var i=0;i<data.length;i++){
+                VillageCount[data[i]["village"]] = data[i]["count"];
+            }
+        });
+        d3.csv("countryCount.csv",function (data) {
+            for(var i=0;i<data.length;i++){
+                console.log(data[i])
+                CountryCount[data[i]["countys"]] = data[i]["sum"];
+            }
+        });
+        //console.log(CountryCount);
+        /*
+         d3.csv("Address.csv", function(error, Companydata) {
+         d3.csv("allAddress.csv",function (error,AddressData) {
+         for(var i = 0;i<Companydata.length;i++){
+         for(var j=0;j<AddressData.length;j++){
+
+         }
+         }
+         });
+         });*/
+        //console.log(CompanyList)
+        var color = d3.scale.linear().domain([0, 200]).range(["#ffffff", "#FE0000"]);
+        //console.log(color)
+
+        for(var i =0;i<367;i++){
+
+            $.getJSON("topojson/villages/"+i+".json", function(data) {
+                //console.log(data);
+                geoJsonObject = topojson.feature(data, data.objects.map)
+                map.data.addGeoJson(geoJsonObject);
+                map.data.setStyle({
+                    fillColor: '#ff2946'
+                });
+                map.data.setStyle(function(feature) {
+                    var ascii = feature["f"]["name"];
+
+                    var colors="#ff1f23";
+                    if (typeof color(VillageCount[ascii]) != 'undefined') {
+                        //console.log(typeof ArrayList[ascii])
+                        colors = color(VillageCount[ascii]);
+                    }
+                    return {
+                        fillColor: colors,
+                        strokeWeight: 1,
+                        visible: true
+                    };
+                });
+
+            });
+        }
+        for(var i =0;i<21;i++){
+
+            $.getJSON("topojson/towns/"+i+".json", function(data) {
+                //console.log(data);
+                geoJsonObject = topojson.feature(data, data.objects.map)
+                map.data.addGeoJson(geoJsonObject);
+                map.data.setStyle({
+                    fillColor: '#ff1c35'
+                });
+                map.data.setStyle(function(feature) {
+                    var ascii = feature["f"]["name"];
+
+                    var colors="#ff3858";
+                    if (typeof color(ArrayList[ascii]) != 'undefined') {
+                        //console.log(typeof ArrayList[ascii])
+                        colors = color(ArrayList[ascii]);
+                    }
+                    return {
+                        fillColor: colors,
+                        strokeWeight: 1,
+                        visible: true
+                    };
+                });
+
+            });
+
+        }
+        //var i = 0;
+        var flag = true;
+        /*
+         map.addListener('zoom_changed', function() {
+         //infowindow.setContent('Zoom: ' + map.getZoom());
+         if(map.zoom>10){
+         for(var i =0;i<367;i++){
+
+         $.getJSON("topojson/villages/"+i+".json", function(data) {
+         //console.log(data);
+         geoJsonObject = topojson.feature(data, data.objects.map)
+         map.data.addGeoJson(geoJsonObject);
+         map.data.setStyle({
+         fillColor: '#ff2946'
+         });
+         map.data.setStyle(function(feature) {
+         var ascii = feature["f"]["name"];
+
+         var colors="#ff1f23";
+         if (typeof color(ArrayList[ascii]) != 'undefined') {
+         //console.log(typeof ArrayList[ascii])
+         colors = color(ArrayList[ascii]);
+         }
+         return {
+         fillColor: colors,
+         strokeWeight: 1,
+         visible: true
+         };
+         });
+
+         });
+         }
+         for(var i =0;i<21;i++){
+
+         $.getJSON("topojson/towns/"+i+".json", function(data) {
+         //console.log(data);
+         geoJsonObject = topojson.feature(data, data.objects.map)
+         map.data.addGeoJson(geoJsonObject);
+         map.data.setStyle({
+         fillColor: '#ff1c35'
+         });
+         map.data.setStyle(function(feature) {
+         var ascii = feature["f"]["name"];
+
+         var colors="#ff3858";
+         if (typeof color(ArrayList[ascii]) != 'undefined') {
+         //console.log(typeof ArrayList[ascii])
+         colors = color(ArrayList[ascii]);
+         }
+         return {
+         fillColor: colors,
+         strokeWeight: 1,
+         visible: true
+         };
+         });
+
+         });
+
+         }
+         }else{
+         clear(geoJsonObject)
+         for (var i = 0; i < geoJsonObject.length; i++){
+         map.data.remove(geoJsonObject[i]);
+         }
+         $.getJSON("topojson/counties.json", function(data) {
+         //console.log(data);
+         var geoJsonObject = topojson.feature(data, data.objects.map)
+         map.data.addGeoJson(geoJsonObject);
+         map.data.setStyle({
+         fillColor: '#ffffff'
+         });
+         map.data.setStyle(function(feature) {
+         var ascii = feature["f"]["name"];
+         console.log(ascii)
+         var colors="#fff5f8";
+         console.log(CountryCount)
+         console.log(CountryCount[ascii]);
+         console.log("test")
+         if (typeof color(CountryCount[ascii]) != 'undefined') {
+         //console.log(typeof ArrayList[ascii])
+         colors = color(CountryCount[ascii]);
+         }
+         return {
+         fillColor: colors,
+         strokeWeight: 1,
+         visible: true
+         };
+         });
+
+         });
+         }
+         });*/
+
+
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ1uQe2aMilKakSvizaGAj5NHG-U4qz4U&callback=initMap">
+
+</script>
+</body>
+
+</html>
